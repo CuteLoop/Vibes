@@ -29,3 +29,5 @@ That's it! After the workflow is configured, any push to the `main` branch will 
 Add this to your `README.md` (replace `<USER>` and `<REPO>` with your GitHub username and repository name):
 
 ![Deploy to GitHub Pages](https://github.com/CuteLoop/Vibes/actions/workflows/deploy.yml/badge.svg)
+
+Enjoy :)
