@@ -1,0 +1,38 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main # Or your default branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write      # to deploy to Pages
+      id-token: write   # to verify the deployment originates from an appropriate source
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+        # Deliberately no custom domain configuration here, users can add it manually if needed.
+        # with:
+        #   static_site_generator: hugo
+        #   generator_config_file: config.yaml
+        #   enable_jekyll: false
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          # Upload entire repository (excluding .github folder by default)
+          path: '.'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+        # No explicit `artifact_name` needed if using default from upload-pages-artifact
+        # No explicit `branch` needed if using default from upload-pages-artifact (gh-pages)
+        # No explicit `folder` needed if uploading root and deploying root 

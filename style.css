@@ -1,0 +1,50 @@
+/* MIT License */
+/* Copyright (c) 2024 Your Name or Organization */
+/* Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions: The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software. THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
+
+body {
+    margin: 0;
+    font-family: sans-serif;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden; /* Prevent scrollbars from canvas scaling */
+}
+
+#controls {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    background-color: #f0f0f0;
+    flex-wrap: wrap; /* Allow controls to wrap on smaller screens */
+    gap: 10px; /* Spacing between control elements */
+}
+
+#controls label {
+    margin-left: 10px;
+}
+
+#controls input[type="range"],
+#controls input[type="number"] {
+    margin-left: 5px;
+}
+
+#controls button {
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+#canvasContainer {
+    flex-grow: 1; /* Canvas container takes remaining space */
+    display: flex; /* Enable flex for centering canvas */
+    justify-content: center;
+    align-items: center;
+    overflow: hidden; /* Important for p5.js canvas responsiveness */
+    background-color: #ddd; /* Background for area outside canvas */
+}
+
+/* Style for the p5.js canvas itself (if needed) */
+canvas {
+    display: block; /* Removes extra space below canvas */
+    border: 1px solid #ccc;
+} 
