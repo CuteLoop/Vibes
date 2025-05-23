@@ -1,65 +1,90 @@
 # Langton’s Ant Simulator — *Project Vibes*
 
-> *“From simple rules, unexpected highways emerge.”* — Observation after Langton, 1986
+> *“From simple rules, unexpected highways emerge.”* — Observation after Langton (1986)
 
 [![Deploy](https://github.com/CuteLoop/Vibes/actions/workflows/deploy.yml/badge.svg)](https://github.com/CuteLoop/Vibes/actions/workflows/deploy.yml)
+
 \:rocket: **Live demo:** [https://cuteloop.github.io/Vibes/](https://cuteloop.github.io/Vibes/)
 
 ---
 
-## 1 · Why should mathematicians care?
+## 1 · Mathematical teaser
 
-Langton’s Ant is a minimalist **two–state, two–colour cellular automaton** on $\mathbb Z^2$.  Despite the trivial local rule
+For each lattice point \$\bigl(x,y\bigr)\in\mathbb Z^{2}\$ we store a **color** \$c\in S={\text{white},\text{black}}\$.
+The **ant** has a position \$(x,y)\$ and an **orientation** \$d\in O={!
+\uparrow,\rightarrow,\downarrow,\leftarrow}\$.
 
+The local update rule is a function
 
-\textbf{if}\;\square_{i,j}=\text{white}\;\Rightarrow\;\text{turn Right};\quad
-\textbf{else}\;\text{turn Left},\tag{1}\]
-the global trajectory exhibits three distinct regimes—chaos, symmetry, and the famous **periodic highway** that grows linearly after about \(10^4\) steps.  The simulator lets you witness this phase transition in real time, zoom‑panning through a lattice of up to a million visited cells at 60 fps.
+$$
+  f:S\times O\;\longrightarrow\;S\times O,\qquad
+  f(c,d)=\bigl(\overline c,\;R_{c}(d)\bigr),
+$$
 
-*Mathematical digression.*  A long‑standing open problem asks whether every finite configuration eventually builds a highway. Numerical evidence here suggests the ant’s displacement after \(n\) steps obeys an empirical law \(\Theta(n)\) once the corridor stabilises, but a proof remains elusive.
+where \$\overline c\$ flips the colour and \$R\_{c}\$ rotates the heading \$+\tfrac{\pi}{2}\$ if \$c=\text{white}\$ and \$-\tfrac{\pi}{2}\$ if \$c=\text{black}\$.
+Despite this two–line definition the trajectory exhibits a *transient chaos* followed (after ≈,10 000 steps) by a periodic **highway** of period 104.
+
+Mathematicians see it as a playground for *emergence*, *computability* (it’s Turing complete!), and *probabilistic tilings*.
 
 ---
 
-## 2 · Quick start
+## 2 · Project highlights
+
+* **Pure client‑side** HTML + ES‑modules; no bundler.
+* Rendering via `p5.js` on an auto‑scaling canvas (zoom & pan).
+* Sparse grid stored as a `Set<number>` → linear memory in visited cells.
+* 60 fps at 10 k steps/frame on a mid‑2020 laptop in Chrome.
+* One‑click **GitHub Pages** deployment (workflow in `.github/workflows/deploy.yml`).
+
+---
+
+## 3 · Quick start (local)
+
 ```bash
-# clone and run locally
-git clone https://github.com/CuteLoop/Vibes.git
-cd Vibes
-npx serve . -l 8000     # or: python -m http.server 8000
-#→ http://localhost:8000
+python -m http.server 8000   # OR  npx serve . -l 8000
 ```
-Controls: **Play / Pause** (or `Space`), **Reset** (`R`), speed slider, cell‑size input, mouse wheel = zoom, drag = pan, **Download PNG** for snapshots.
+
+Open [http://localhost:8000](http://localhost:8000) and press **Play**.
+Need auto‑reload? → Install the *Live Server* VS‑Code extension.
 
 ---
 
-## 3 · Implementation highlights
-| Component | Idea | Complexity |
-|-----------|------|-----------|
-| Sparse grid | Set keyed by \(x\cdot 2^{32}+y\) integer hash → \(O(1)\) toggle | \(\Theta(k)\) memory for \(k\) black cells |
-| Rendering  | Off‑screen `p5.Graphics` cache for static trail; redraw only flipped cells each frame | Sustains \(10^4\) steps ∙ 60 fps |
-| Autodeploy | GitHub Actions ⇒ artifact ⇒ `gh-pages` | 30 s CI round‑trip |
+## 4 · Repo structure
+
+```
+Vibes/
+ ├─ index.html        # markup
+ ├─ style.css         # flex layout + responsive canvas
+ ├─ src/
+ │   ├─ grid.js       # sparse Set, color flips
+ │   ├─ ant.js        # position + heading logic
+ │   ├─ ui.js         # controls wiring (Play/Pause, etc.)
+ │   └─ main.js       # p5 sketch + draw loop
+ └─ .github/workflows/deploy.yml  # auto‑publish to gh‑pages
+```
 
 ---
 
-## 4 · Continuous deployment
-The workflow **`.github/workflows/deploy.yml`** uploads the repository (minus CI files) as a Pages artifact and publishes to the `gh-pages` branch.  Enable *Settings → Pages → Source → GitHub Actions* once, and every push to `main` is live within a minute.
+## 5 · Continuous deployment
+
+1. **Push** to `main` → GitHub Action packages the site, creates/updates `gh-pages`.
+2. **Settings → Pages → Source:** “GitHub Actions”.  *(One‑time toggle.)*
+3. Site is instantly live at `https://CuteLoop.github.io/Vibes/`.
 
 ---
 
-## 5 · *How this code was vibe‑coded*
-This project was developed in **Cursor** with an *agentic coding* workflow:
-1. A structured prompt (see `docs/prompt.md`) described deliverables, performance targets, and GitHub Pages automation.
-2. Cursor’s inline ChatGPT completions generated boilerplate; I iterated, running `npx serve .` after each change.
-3. Large refactors (sparse‑grid hashing, UI modularisation) were driven by conversation with ChatGPT (o3 model), followed by manual optimisation.
-4. README and documentation were composed with the same conversational approach — you’re reading the result.
+## 6 · Vibe‑coding with Cursor + ChatGPT
 
-> **Disclaimer.** Portions of the codebase and this document were generated with OpenAI ChatGPT.  All outputs were reviewed and adjusted for correctness, style, and performance before commit.  Any mathematical errors remain the author’s.
+This repository was scaffolded in one sitting using **Cursor**’s agentic code‑generation (“Vibe Coding” mode) powered by **OpenAI ChatGPT (o3)**.  Prompts described the desired architecture, performance targets, and deployment pipeline; the assistant produced modular code, tests, and the CI file.  Manual edits were limited to tweaking CSS and tightening the math exposition you’re reading now.
+
+> *Disclaimer.*  While LLMs accelerate boiler‑plate production, always review logic and security by hand—particularly for projects that do more than colour squares!
 
 ---
 
-## 6 · License
-This project is released under the **MIT License** — see `LICENSE` for full text.
+## 7 · Exercises for the reader
 
-Happy ant‑watching & may your highways be ever straight!
+1. Prove that the ant visits every square infinitely often **or** eventually enters a highway.  *(Hint: consider parity arguments and bounding boxes—then realise you’ll need the 2004 result by Gajardo et al.)*
+2. Modify `grid.js` to support \$k\$‑colour ants (Turmites). What new periodicities appear?
+3. Show that Langton’s Ant can simulate a 1‑tape Turing machine. Embed the construction in JavaScript and measure step complexity.
 
-
+*Happy ant‑herding!*
